@@ -1,12 +1,47 @@
-# React + Vite
+# 📚 BookFinder
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+BookFinder is a web application built with **React**, **Tailwind CSS**, and the **Google Books API** that allows users to search for books, view details, and access online previews when available.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 Features
 
-## Expanding the ESLint configuration
+- 🔍 **Search Books** — Find books by title, author, or keywords using Google Books API.
+- 📖 **Read Now** — Open books online when available (`ALL_PAGES` or `PARTIAL` viewability).
+- 💾 **Bookmark** — Save books to your personal bookmarks list (local state for now).
+- ⭐ **Rate Books** — Rate your favorite books (stored locally).
+- 📂 **Similar Books** — See recommendations based on categories.
+- 📱 **Responsive Design** — Mobile-friendly UI built with Tailwind CSS.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+## 🛠 Tech Stack
+
+- **React** — UI development
+- **Tailwind CSS** — Styling
+- **Google Books API** — Book data & previews
+- **Heroicons** — Icons
+- **React Router** — Navigation
+
+---
+
+## 📷 Screenshots
+
+_(Add screenshots here if you have them)_
+
+---
+
+## ⚠ Limitations
+
+- Only books with `viewability` set to `ALL_PAGES` or `PARTIAL` can be read online.
+- Some books may not open due to Google Books region restrictions.
+
+---
+
+## 🔧 Setup & Installation
+
+1. Clone this repository:
+   ```bash
+   git clone https://github.com/<your-username>/<repo-name>.git
+   cd <repo-name>
+   ```
