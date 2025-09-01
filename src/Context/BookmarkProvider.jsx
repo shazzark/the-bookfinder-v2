@@ -5,6 +5,7 @@ import { supabase } from "../service/supabase";
 
 import BookmarksContext from "./BookmarksContext.js";
 import { AuthContext } from "./authContext.jsx";
+// import { AuthContext } from "./authContext.jsx";
 // import { AuthContext } from "./authContext.js";
 
 export function BookmarksProvider({ children }) {
