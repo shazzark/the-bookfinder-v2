@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import { supabase } from "../service/supabase";
 
 import BookmarksContext from "./BookmarksContext.js";
-import { AuthContext } from "./authContext.jsx";
+import { AuthContext } from "./AuthContext";
 // import { AuthContext } from "./authContext.jsx";
 // import { AuthContext } from "./authContext.js";
 
