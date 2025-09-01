@@ -6,65 +6,65 @@ import Discover from "./pages/Discover";
 import PageNotFound from "./pages/PageNotFound";
 import AppLayout from "./pages/AppLayout";
 import Login from "./pages/Login";
-import Signup from "./pages/Signup";
-import AuthLayout from "./components/AuthLayout";
-import { Suspense } from "react"; // Add this import
+import { Suspense } from "react";
 import FullPageSpinner from "./ui/FullPageSpinner";
 import BookDetails from "./pages/BookDetails";
-import AuthCallback from "./pages/AuthCallback";
-import WaitingConfirmation from "./pages/WaitingConfirmation";
-import ProtectedRoute from "./utils/ProtectedRoutes";
+import SignUp from "./pages/Signup";
+import { AuthProvider } from "./Context/AuthProvider";
+import { Toaster } from "react-hot-toast";
+import { BookmarksProvider } from "./Context/BookmarkProvider";
+import ProtectedRoute from "./components/Common/ProtectedRoutes";
+// import { BookmarksProvider } from "./Context/BookmarkContext";
 
 function App() {
   return (
-    <BrowserRouter>
-      <Suspense fallback={<FullPageSpinner />}>
-        <Routes>
-          {/* Main App */}
-          <Route path="/" element={<AppLayout />}>
-            <Route index element={<Home />} />
-            <Route
-              path="discover"
-              element={
-                <ProtectedRoute redirectTo="/login">
-                  {" "}
-                  <Discover />
-                </ProtectedRoute>
-              }
-            />
-            <Route path="about" element={<About />} />
-            <Route path="contact" element={<Contact />} />
-            <Route path="/books/:id" element={<BookDetails />} />
-            {/* ... other routes ... */}
-          </Route>
+    <AuthProvider>
+      <BookmarksProvider>
+        <BrowserRouter>
+          <Suspense fallback={<FullPageSpinner />}>
+            <Routes>
+              <Route path="/" element={<AppLayout />}>
+                <Route index element={<Home />} />
 
-          {/* Auth Pages */}
-          <Route element={<AuthLayout center />}>
-            {" "}
-            {/* Fixed: Added closing slash */}
-            <Route path="login" element={<Login />} />
-            <Route path="signup" element={<Signup />} />
-          </Route>
+                <Route
+                  path="discover"
+                  element={
+                    <ProtectedRoute>
+                      <Discover />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/books/:id"
+                  element={
+                    <ProtectedRoute>
+                      <BookDetails />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route path="about" element={<About />} />
+                <Route path="contact" element={<Contact />} />
+              </Route>
 
-          {/* Special Auth Pages */}
-          <Route element={<AuthLayout bare center />}>
-            {" "}
-            {/* Fixed: Added closing slash */}
-            <Route
-              path="waiting-confirmation"
-              element={<WaitingConfirmation />}
-            />
-          </Route>
+              <Route path="login" element={<Login />} />
+              <Route path="signup" element={<SignUp />} />
 
-          <Route element={<AuthLayout />}>
-            <Route path="auth/callback" element={<AuthCallback />} />
-          </Route>
-
-          {/* 404 */}
-          <Route path="*" element={<PageNotFound />} />
-        </Routes>
-      </Suspense>
-    </BrowserRouter>
+              <Route path="*" element={<PageNotFound />} />
+            </Routes>
+          </Suspense>
+        </BrowserRouter>
+        <Toaster
+          position="top-center"
+          toastOptions={{
+            duration: 4000,
+            style: {
+              background: "#363636",
+              color: "#fff",
+            },
+          }}
+        />
+      </BookmarksProvider>
+    </AuthProvider>
   );
 }
 

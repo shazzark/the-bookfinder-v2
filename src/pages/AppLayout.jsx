@@ -1,9 +1,15 @@
-import { Outlet } from "react-router-dom";
-import Header from "../components/Header";
-import { supabase } from "../hooks/supabaseClient";
+// AppLayout.jsx
+import { Outlet, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { supabase } from "../service/supabase";
+import Header from "../components/ui/Header";
+import { useBookmarks } from "../hooks/useBookmarks";
 
-export default function AppLayout() {
+function AppLayout() {
+  const [content, setContent] = useState(null);
+  const navigate = useNavigate();
+  const { toggleBookmark, isBookmarked, getUserRating } = useBookmarks();
+
   const [user, setUser] = useState(null);
 
   useEffect(() => {
@@ -15,28 +21,33 @@ export default function AppLayout() {
 
     return () => subscription.unsubscribe();
   }, []);
-  return (
-    <div className="relative min-h-screen">
-      {/* Responsive Background Container */}
-      <div className="fixed inset-0 -z-10">
-        <img
-          src="/backgroundImg.jpg"
-          alt="Decorative background"
-          className="w-full h-full object-cover object-center"
-          style={{ opacity: 0.2 }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-b "></div>
-      </div>
 
-      {/* Fixed Header */}
+  function handleContentChange(newContent) {
+    setContent(newContent);
+  }
+
+  function handleNavigation(newPath) {
+    navigate(newPath);
+  }
+
+  return (
+    <div className="relative min-h-screen bg-gradient-to-b bg-primary-200  ">
       <Header user={user} />
 
-      {/* Main content container with consistent max-width and centering */}
-      <main className="max-w-[150rem] w-full mx-auto pt-24 pb-10 px-6">
-        {" "}
-        {/* Matches header's max-width */}
-        <Outlet /> {/* All page content will inherit this centered layout */}
+      <main className="w-full max-w-7xl mx-auto pb-6 px-4 sm:px-6 lg:px-8">
+        <Outlet
+          context={{
+            isBookmarked,
+            toggleBookmark,
+            getUserRating,
+            content,
+            handleContentChange,
+            handleNavigation,
+          }}
+        />
       </main>
     </div>
   );
 }
+
+export default AppLayout;

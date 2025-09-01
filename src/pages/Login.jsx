@@ -1,189 +1,173 @@
-import { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import { supabase } from "../hooks/supabaseClient";
-import Logo from "../components/Logo";
+// src/pages/Login.jsx
+import { useState } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
+import PrimaryButton from "../components/button/PrimaryButton";
+// import { useAuth } from "../context/useAuth";
+import toast from "react-hot-toast";
+import { useAuth } from "../hooks/useAuth";
 
 export default function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [rememberMe, setRememberMe] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+  const [isLoading, setIsLoading] = useState(false);
+  const { signInWithEmail, loginWithGoogle } = useAuth();
   const navigate = useNavigate();
 
-  // Redirect if already logged in
-  useEffect(() => {
-    const checkSession = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      if (user) navigate("/discover");
-    };
-    checkSession();
-  }, [navigate]);
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
 
-  const handleLogin = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    setError(null);
+    setIsLoading(true);
 
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-
-      if (error) {
-        if (error.status === 400) {
-          setError("Email not confirmed. Please check your inbox.");
-        } else {
-          setError(error.message);
-        }
-        return data;
-      }
-
-      // Set persistent session if "Remember Me" is checked
-
-      navigate("/discover");
+      await signInWithEmail(formData.email, formData.password);
+      toast.success("Logged in successfully!");
+      navigate("/");
     } catch (error) {
-      setError(error.message || "Invalid credentials");
+      console.error("Login error:", error);
+      toast.error(error.message || "Failed to login");
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
   const handleGoogleLogin = async () => {
     try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: "google",
-        options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
-        },
-      });
-
-      if (error) throw error;
+      await loginWithGoogle();
     } catch (error) {
-      setError(error.message);
+      console.error("Google login error:", error);
+      toast.error(error.message || "Failed to login with Google");
     }
   };
 
   return (
-    <div
-      className="min-h-screen flex items-center justify-center p-4"
-      // style={{
-      //   backgroundImage: "url('/signup.jpg')",
-      //   backgroundSize: "cover",
-      //   backgroundPosition: "center",
-      //   backgroundAttachment: "fixed",
-      // }}
-    >
-      {/* Semi-transparent overlay */}
-      <div className="absolute inset-0 bg-black bg-opacity-30"></div>
-
-      {/* Login Card */}
-      <div className="max-w-md w-full mx-auto p-8 bg-white bg-opacity-90 rounded-xl shadow-xl relative z-10">
-        {/* Centered Logo */}
-        <div className="flex justify-center mb-6">
-          <Logo className="h-12" />
+    <div className="min-h-[100dvh] bg-primary-100 flex items-center justify-center px-6 py-12">
+      <div className="max-w-md w-full bg-white rounded-2xl shadow-book p-8">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold text-primary-700 mb-2">
+            Welcome Back
+          </h1>
+          <p className="text-neutral-600">
+            Sign in to continue your book discovery journey
+          </p>
         </div>
 
-        {/* Personalized Header */}
-        <header className="mb-8 text-center">
-          <h1 className="text-2xl font-bold">Welcome back!</h1>
-          <p className="text-gray-600 mt-2">
-            Sign in to access your <strong>exclusive content</strong>
-          </p>
-        </header>
-
-        {error && (
-          <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-lg text-sm">
-            {error}
-          </div>
-        )}
-
-        <form onSubmit={handleLogin}>
-          {/* Email Field */}
-          <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+        {/* Login Form */}
+        <form className="space-y-6" onSubmit={handleSubmit}>
+          <div>
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-neutral-700 mb-2"
+            >
               Email Address
             </label>
             <input
               type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              id="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
               required
+              className="w-full px-4 py-3 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              placeholder="Enter your email"
             />
           </div>
 
-          {/* Password Field */}
-          <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+          <div>
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-neutral-700 mb-2"
+            >
               Password
             </label>
             <input
               type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              id="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
               required
-              minLength={6}
+              className="w-full px-4 py-3 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              placeholder="Enter your password"
             />
           </div>
 
-          {/* Remember Me */}
-          <div className="flex items-center mb-6">
-            <input
-              type="checkbox"
-              id="remember"
-              checked={rememberMe}
-              onChange={(e) => setRememberMe(e.target.checked)}
-              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-            />
-            <label
-              htmlFor="remember"
-              className="ml-2 block text-sm text-gray-700"
+          {/* Remember Me & Forgot Password */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <input
+                type="checkbox"
+                id="remember"
+                className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-neutral-300 rounded"
+              />
+              <label
+                htmlFor="remember"
+                className="ml-2 block text-sm text-neutral-700"
+              >
+                Remember me
+              </label>
+            </div>
+
+            <NavLink
+              to="/forgot-password"
+              className="text-sm text-primary-600 hover:text-primary-700"
             >
-              Remember me
-            </label>
+              Forgot password?
+            </NavLink>
           </div>
 
-          {/* Login Button */}
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-lg font-medium mb-4 transition-colors disabled:opacity-70"
-          >
-            {loading ? "Signing in..." : "Login"}
-          </button>
+          <PrimaryButton className="w-full" type="submit" disabled={isLoading}>
+            {isLoading ? "Signing In..." : "Sign In"}
+          </PrimaryButton>
         </form>
 
+        {/* Divider */}
+        <div className="my-6 flex items-center">
+          <div className="flex-1 border-t border-neutral-300"></div>
+          <span className="px-3 text-sm text-neutral-500">or</span>
+          <div className="flex-1 border-t border-neutral-300"></div>
+        </div>
+
         {/* Social Login */}
-        <button
-          onClick={handleGoogleLogin}
-          disabled={loading}
-          className="w-full flex items-center justify-center gap-2 border border-gray-300 py-3 px-4 rounded-lg font-medium mb-6 hover:bg-gray-50 transition-colors disabled:opacity-70"
-        >
-          <span>Continue with Google</span>
-        </button>
-
-        {/* Create Account */}
-        <p className="text-center text-sm text-gray-600">
-          Don't have an account?{" "}
-          <Link
-            to="/signup"
-            className="text-blue-600 hover:underline font-medium"
+        <div className="space-y-3">
+          <button
+            onClick={handleGoogleLogin}
+            className="w-full flex items-center justify-center gap-3 px-4 py-3 border border-neutral-300 rounded-lg hover:bg-neutral-50 transition-colors"
+            disabled={isLoading}
           >
-            Create an Account
-          </Link>
-        </p>
+            <span className="text-xl">📘</span>
+            Sign in with Google
+          </button>
 
-        {/* Forgot Password */}
-        <p className="text-center text-sm text-gray-600 mt-2">
-          <Link to="/forgot-password" className="text-blue-600 hover:underline">
-            Forgot your password?
-          </Link>
-        </p>
+          <button
+            className="w-full flex items-center justify-center gap-3 px-4 py-3 border border-neutral-300 rounded-lg hover:bg-neutral-50 transition-colors"
+            disabled
+          >
+            <span className="text-xl">📗</span>
+            Sign in with Facebook
+          </button>
+        </div>
+
+        {/* Signup Link */}
+        <div className="text-center mt-8">
+          <p className="text-neutral-600">
+            Don't have an account?{" "}
+            <NavLink
+              to="/signup"
+              className="text-primary-600 hover:text-primary-700 font-semibold"
+            >
+              Create one
+            </NavLink>
+          </p>
+        </div>
       </div>
     </div>
   );
