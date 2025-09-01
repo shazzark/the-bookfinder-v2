@@ -1,8 +1,12 @@
-// src/components/Navbar.jsx
 import { NavLink } from "react-router-dom";
+import { useContext } from "react";
 import PrimaryButton from "../button/PrimaryButton";
+import { AuthContext } from "../../Context/AuthContext";
+// import { AuthContext } from "../Context/AuthContext";
 
 function Navbar({ compact = false, isMobile = false }) {
+  const { user, loginWithGoogle } = useContext(AuthContext);
+
   const linkClass = ({ isActive }) =>
     `px-3 py-2 transition-all duration-300 font-medium rounded-lg text-sm
      ${
@@ -26,10 +30,27 @@ function Navbar({ compact = false, isMobile = false }) {
         <NavLink to="/contact" className={linkClass}>
           Contact
         </NavLink>
+
         <div className="pt-4 mt-4 border-t border-gray-200">
-          <PrimaryButton to="/login" className="w-full justify-center">
-            Login
-          </PrimaryButton>
+          {user ? (
+            <div className="flex items-center gap-2">
+              {user.user_metadata?.avatar_url && (
+                <img
+                  src={user.user_metadata.avatar_url}
+                  alt="profile"
+                  className="w-8 h-8 rounded-full border"
+                />
+              )}
+              <span>{user.user_metadata?.full_name || user.email}</span>
+            </div>
+          ) : (
+            <PrimaryButton
+              onClick={loginWithGoogle}
+              className="w-full justify-center"
+            >
+              Login
+            </PrimaryButton>
+          )}
         </div>
       </nav>
     );
@@ -54,11 +75,29 @@ function Navbar({ compact = false, isMobile = false }) {
           </NavLink>
         </div>
 
-        {/* Login button */}
+        {/* Login/Profile */}
         <div>
-          <PrimaryButton to="/login" size={compact ? "sm" : "md"}>
-            Login
-          </PrimaryButton>
+          {user ? (
+            <div className="flex items-center gap-2">
+              {user.user_metadata?.avatar_url && (
+                <img
+                  src={user.user_metadata.avatar_url}
+                  alt="profile"
+                  className="w-8 h-8 rounded-full border"
+                />
+              )}
+              <span className="text-sm font-medium">
+                {user.user_metadata?.full_name || user.email}
+              </span>
+            </div>
+          ) : (
+            <PrimaryButton
+              onClick={loginWithGoogle}
+              size={compact ? "sm" : "md"}
+            >
+              Login
+            </PrimaryButton>
+          )}
         </div>
       </div>
     </nav>

@@ -1,41 +1,18 @@
-import { useEffect, useState } from "react";
-// import { supabase } from "../hooks/supabaseClient";
+import { useContext, useState } from "react";
 import {
   BellIcon,
   ChatBubbleOvalLeftIcon,
   UserCircleIcon,
   EllipsisVerticalIcon,
 } from "@heroicons/react/24/outline";
-import { supabase } from "../../service/supabase";
+import { AuthContext } from "../../Context/AuthContext";
 
 function SideHeader({ onProfileClick, compact = false }) {
-  const [userData, setUserData] = useState(null);
+  const { user } = useContext(AuthContext);
   const [showDropdown, setShowDropdown] = useState(false);
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const {
-          data: { user },
-        } = await supabase.auth.getUser();
-        if (!user) return;
-
-        setUserData({
-          name: user.user_metadata?.full_name || user.email?.split("@")[0],
-          email: user.email,
-        });
-      } catch (error) {
-        console.error("Failed to fetch user:", error);
-      }
-    };
-
-    fetchUserData();
-
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange(fetchUserData);
-    return () => subscription.unsubscribe();
-  }, []);
+  const name = user?.user_metadata?.full_name || user?.email?.split("@")[0];
+  const email = user?.email;
 
   if (compact) {
     return (
@@ -82,22 +59,24 @@ function SideHeader({ onProfileClick, compact = false }) {
         <span className="absolute top-0 right-0 h-1.5 w-1.5 rounded-full bg-blue-500"></span>
       </button>
 
-      <div className="flex items-center gap-2 border-l border-gray-200 pl-3">
-        <button
-          onClick={onProfileClick}
-          className="text-gray-500 hover:text-gray-700"
-        >
-          <UserCircleIcon className="h-7 w-7" />
-        </button>
-        <div className="hidden sm:block text-right">
-          <p className="text-sm font-medium truncate max-w-[120px]">
-            {userData?.name || "User"}
-          </p>
-          <p className="text-xs text-gray-600 truncate max-w-[120px]">
-            {userData?.email || "No email"}
-          </p>
+      {user && (
+        <div className="flex items-center gap-2 border-l border-gray-200 pl-3">
+          <button
+            onClick={onProfileClick}
+            className="text-gray-500 hover:text-gray-700"
+          >
+            <UserCircleIcon className="h-7 w-7" />
+          </button>
+          <div className="hidden sm:block text-right">
+            <p className="text-sm font-medium truncate max-w-[120px]">
+              {name || "User"}
+            </p>
+            <p className="text-xs text-gray-600 truncate max-w-[120px]">
+              {email || "No email"}
+            </p>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
