@@ -3,8 +3,6 @@ import { supabase } from "../service/supabase";
 // import { AuthContext } from "./AuthContext";
 import { AuthContext } from "./AuthContext";
 
-// import { AuthContext } from "./authContext";
-
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
