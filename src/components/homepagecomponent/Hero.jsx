@@ -3,7 +3,7 @@ import SecondaryButton from "../button/SecondaryButton";
 
 export default function Hero() {
   return (
-    <section className="min-h-[calc(100dvh-210px)] flex items-center justify-center px-6">
+    <section className="min-h-[calc(100dvh-300px)] flex items-center justify-center px-6">
       <div className="max-w-[130rem] w-full mx-auto text-center p-8">
         {/* Headline */}
         <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight">
