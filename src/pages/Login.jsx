@@ -5,6 +5,8 @@ import PrimaryButton from "../components/button/PrimaryButton";
 // import { useAuth } from "../context/useAuth";
 import toast from "react-hot-toast";
 import { useAuth } from "../hooks/useAuth";
+import SocialLogin from "../components/Logincomponent/SocialLogin";
+import RemembermeForm from "../components/Logincomponent/RemembermeForm";
 
 export default function Login() {
   const [formData, setFormData] = useState({
@@ -101,28 +103,7 @@ export default function Login() {
           </div>
 
           {/* Remember Me & Forgot Password */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <input
-                type="checkbox"
-                id="remember"
-                className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-neutral-300 rounded"
-              />
-              <label
-                htmlFor="remember"
-                className="ml-2 block text-sm text-neutral-700"
-              >
-                Remember me
-              </label>
-            </div>
-
-            <NavLink
-              to="/forgot-password"
-              className="text-sm text-primary-600 hover:text-primary-700"
-            >
-              Forgot password?
-            </NavLink>
-          </div>
+          <RemembermeForm />
 
           <PrimaryButton className="w-full" type="submit" disabled={isLoading}>
             {isLoading ? "Signing In..." : "Sign In"}
@@ -137,24 +118,10 @@ export default function Login() {
         </div>
 
         {/* Social Login */}
-        <div className="space-y-3">
-          <button
-            onClick={handleGoogleLogin}
-            className="w-full flex items-center justify-center gap-3 px-4 py-3 border border-neutral-300 rounded-lg hover:bg-neutral-50 transition-colors"
-            disabled={isLoading}
-          >
-            <span className="text-xl">📘</span>
-            Sign in with Google
-          </button>
-
-          <button
-            className="w-full flex items-center justify-center gap-3 px-4 py-3 border border-neutral-300 rounded-lg hover:bg-neutral-50 transition-colors"
-            disabled
-          >
-            <span className="text-xl">📗</span>
-            Sign in with Facebook
-          </button>
-        </div>
+        <SocialLogin
+          handleGoogleLogin={handleGoogleLogin}
+          isLoading={isLoading}
+        />
 
         {/* Signup Link */}
         <div className="text-center mt-8">

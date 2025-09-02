@@ -7,13 +7,15 @@ import PageNotFound from "./pages/PageNotFound";
 import AppLayout from "./pages/AppLayout";
 import Login from "./pages/Login";
 import { Suspense } from "react";
-import FullPageSpinner from "./ui/FullPageSpinner";
+// import FullPageSpinner from "./ui/FullPageSpinner";
 import BookDetails from "./pages/BookDetails";
 import SignUp from "./pages/Signup";
 import { AuthProvider } from "./Context/AuthProvider";
 import { Toaster } from "react-hot-toast";
 import { BookmarksProvider } from "./Context/BookmarkProvider";
 import ProtectedRoute from "./components/Common/ProtectedRoutes";
+import LatestbookPage from "./pages/LatestbookPage";
+import LoadingSpinner from "./ui/LoadingSpinner";
 // import { BookmarksProvider } from "./Context/BookmarkContext";
 
 function App() {
@@ -21,7 +23,7 @@ function App() {
     <AuthProvider>
       <BookmarksProvider>
         <BrowserRouter>
-          <Suspense fallback={<FullPageSpinner />}>
+          <Suspense fallback={<LoadingSpinner />}>
             <Routes>
               <Route path="/" element={<AppLayout />}>
                 <Route index element={<Home />} />
@@ -39,6 +41,14 @@ function App() {
                   element={
                     <ProtectedRoute>
                       <BookDetails />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="latest-books"
+                  element={
+                    <ProtectedRoute>
+                      <LatestbookPage />
                     </ProtectedRoute>
                   }
                 />

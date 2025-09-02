@@ -2,6 +2,7 @@
 // eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
 import BooksGrid from "./BooksGrid";
+import { Link } from "react-router-dom";
 
 export default function BooksTab({
   selectedGenre,
@@ -50,6 +51,16 @@ export default function BooksTab({
           </div>
         </div>
       </motion.div>
+
+      {/* Latest Books Link - Added this section */}
+      <div className="text-center mb-6">
+        <Link
+          to="/latest-books"
+          className="inline-block text-blue-600 hover:text-blue-800 font-medium text-lg transition-colors"
+        >
+          -latestbook-
+        </Link>
+      </div>
 
       {loading ? (
         <motion.div

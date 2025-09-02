@@ -12,7 +12,7 @@ export default function Discover() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="w-full max-w-[1400px] mx-auto p-4">
+    <div className="w-full max-w-[1400px] min-h-[calc(100dvh-250px)] mx-auto p-4">
       {/* Back Navigation */}
       <div className="flex items-center mb-6">
         <button className="flex items-center text-gray-600 hover:text-gray-900">
